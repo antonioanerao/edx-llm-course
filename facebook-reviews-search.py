@@ -30,18 +30,7 @@ pdf['id'] = pdf.index
 from sentence_transformers import InputExample
 
 # Cria um subconjunto do DataFrame pdf com as primeiras 100.000 linhas
-pdf_subset = pdf.head(100000)
-
-# Define uma função example_create_fn para criar instâncias InputExample a partir de uma série pandas
-def example_create_fn(doc1: pd.Series) -> InputExample:
-    """
-    Função auxiliar que cria um exemplo InputExample com um único texto.
-    """
-    return InputExample(texts=[doc1])
-
-# Aplica a função example_create_fn a cada linha do subconjunto pdf_subset
-# e cria uma lista de objetos InputExample
-faiss_train_examples = pdf_subset.apply(lambda x: example_create_fn(x['review_text']), axis=1).tolist()
+pdf_subset = pdf.head(1000)
 
 # Importa a classe SentenceTransformer do pacote sentence_transformers
 from sentence_transformers import SentenceTransformer
@@ -56,9 +45,6 @@ model.to(device)
 
 # Codifica os textos do DataFrame pdf_subset usando o modelo SentenceTransformer
 faiss_review_text_embedding = model.encode(pdf_subset.review_text.values.tolist())
-
-# Calcula o comprimento das representações vetoriais e do primeiro vetor
-len(faiss_review_text_embedding), len(faiss_review_text_embedding[0])
 
 # Importa bibliotecas numpy e faiss para tarefas de busca e indexação
 import numpy as np
